@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GAME_THAY_QUANG_WEB</title>
+    <base href="/" />
+    <link href="_framework/dotnet.l6a75ojp3f.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-TSSGC84crmdxpyGiL6GE7TaZ8VBzK+5XJkxbvmyzGfk=" />
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="GAME_THAY_QUANG_WEB.styles.css" rel="stylesheet" />
+    <script type="importmap">
+        {
+          "imports": {
+            "./_framework/blazor.webassembly.js": "./_framework/blazor.webassembly.w3qd1tpl0e.js",
+            "./_framework/dotnet.js": "./_framework/dotnet.l6a75ojp3f.js",
+            "./_framework/dotnet.native.js": "./_framework/dotnet.native.b6l13xorvf.js",
+            "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.v06hirbjsv.js"
+          },
+          "scopes": {},
+          "integrity": {
+            "./_framework/blazor.webassembly.js": "sha256-lDXsDYFgm62F+YUvxES7IOTCXYpiHpU3uR45YdC6mq4=",
+            "./_framework/blazor.webassembly.w3qd1tpl0e.js": "sha256-lDXsDYFgm62F+YUvxES7IOTCXYpiHpU3uR45YdC6mq4=",
+            "./_framework/dotnet.js": "sha256-TSSGC84crmdxpyGiL6GE7TaZ8VBzK+5XJkxbvmyzGfk=",
+            "./_framework/dotnet.l6a75ojp3f.js": "sha256-TSSGC84crmdxpyGiL6GE7TaZ8VBzK+5XJkxbvmyzGfk=",
+            "./_framework/dotnet.native.b6l13xorvf.js": "sha256-jZddobLBM2C3lQhYQ61xSQJ/WqD3eQCO3RzoHGaOjx0=",
+            "./_framework/dotnet.native.js": "sha256-jZddobLBM2C3lQhYQ61xSQJ/WqD3eQCO3RzoHGaOjx0=",
+            "./_framework/dotnet.runtime.js": "sha256-QbnqrZGHtGq7wudS17/AYEPpH9JkphrsyVllD6JHmds=",
+            "./_framework/dotnet.runtime.v06hirbjsv.js": "sha256-QbnqrZGHtGq7wudS17/AYEPpH9JkphrsyVllD6JHmds="
+          }
+        }</script>
+</head>
+<script>
+        // MẠCH PHÁT PHẲNG NẠP ĐỆM MỞ KHÓA ÂM THANH BẤT BẠI TRÊN TRÌNH DUYỆT MẠNG
+        window.playWebAudioSFX = function (soundFile, volume) {
+            try {
+                var audio = new Audio('sounds/' + soundFile);
+                audio.volume = volume;
+                audio.play();
+            } catch (e) {
+                console.log("Nghẽn mạch phát loa: " + e);
+            }
+        };
+</script>
+
+<body>
+    <div id="app">
+        <svg class="loading-progress">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
+    <script src="_framework/blazor.webassembly.w3qd1tpl0e.js"></script>
+    <!-- BỘ TRỘN ÂM THANH ĐA KÊNH CHUYÊN NGHIỆP CHO GAME WEB THẦY QUẢNG -->
+    <!-- BỘ TRỘN ÂM THANH ĐA KÊNH ĐẦY ĐỦ 100% CHO GAME WEB THẦY QUẢNG -->
+    <script>
+                                // Khởi tạo các kênh âm thanh tĩnh trong bộ nhớ đệm trình duyệt
+// Khởi tạo các kênh âm thanh tĩnh trong bộ nhớ đệm trình duyệt
+const gameAudioChannels = {
+                    "music_bg.wav": new Audio('sounds/music_bg.wav'),
+                    "move.wav": new Audio('sounds/move.wav'),
+                    "capture.wav": new Audio('sounds/capture.wav'),
+                    "flip.wav": new Audio('sounds/flip.wav'),
+                    "win.wav": new Audio('sounds/win.wav'),
+                    "chieu.wav": new Audio('sounds/chieu.wav'),
+                    "lose.wav": new Audio('sounds/lose.wav'),
+                    "winGT.wav": new Audio('sounds/winGT.wav')// THÊM CHÍNH XÁC KÊNH NÀY ĐỂ KÍCH HOẠT TIẾNG THUA CUỘC
+};
+
+
+                                // Cấu hình riêng cho kênh Nhạc Nền chạy lặp vô hạn
+                                gameAudioChannels["music_bg.wav"].loop = true;
+
+                                window.playWebAudioSFX = (soundFile, volumeValue) => {
+                                    try {
+                                        let audio = gameAudioChannels[soundFile];
+                                        if (audio) {
+                                            // Nếu là tệp hiệu ứng ngắn (move, capture, flip, chieu), reset thời gian về 0 để phát lập tức
+                                            if (soundFile !== "music_bg.wav") {
+                                                audio.currentTime = 0;
+                                            }
+                                            audio.volume = volumeValue;
+                                            audio.play().catch(e => console.log("Trình duyệt chờ tương tác để phát âm thanh"));
+                                        }
+                                    } catch (ex) {
+                                        console.log("Lỗi bộ trộn âm thanh: " + ex);
+                                    }
+                                };
+
+                                window.stopWebAudioSFX = (soundFile) => {
+                                    try {
+                                        let audio = gameAudioChannels[soundFile];
+                                        if (audio) { audio.pause(); audio.currentTime = 0; }
+                                    } catch (e) {}
+                                };
+    </script>
+    <script>
+            // MẠCH MỞ KHÓA LOA PHẲNG TỰ ĐỘNG SỬA ĐƯỜNG DẪN BẤT BẠI TRÊN MẠNG GITHUB
+            window.playWebAudioSFX = function (soundFile, volume) {
+                try {
+                    // Tự động kiểm tra nếu code gọi thiếu chữ 'sounds/', hệ thống sẽ tự nới mạch gộp vào cho đúng
+                    var correctPath = soundFile.startsWith('sounds/') ? soundFile : 'sounds/' + soundFile;
+                    var audio = new Audio(correctPath);
+                    audio.volume = volume;
+                    audio.play();
+                } catch (e) {
+                    console.log("Nghẽn mạch phát loa: " + e);
+                }
+            };
+    </script>
+
+<script>
+    // MẠCH MỞ KHÓA LOA PHẲNG TỰ ĐỘNG SỬA ĐƯỜNG DẪN BẤT BẠI TRÊN MẠNG GITHUB
+    window.playWebAudioSFX = function (soundFile, volume) {
+        try {
+            // Tự động kiểm tra nếu code gọi thiếu chữ 'sounds/', hệ thống sẽ tự nới mạch gộp vào cho đúng
+            var correctPath = soundFile.startsWith('sounds/') ? soundFile : 'sounds/' + soundFile;
+            var audio = new Audio(correctPath);
+            audio.volume = volume;
+            audio.play();
+        } catch (e) {
+            console.log("Nghẽn mạch phát loa: " + e);
+        }
+    };
+</script>
+
+</body>
+
+</html>
